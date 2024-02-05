@@ -1,0 +1,276 @@
+@charset 'utf-8';
+html {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 14px;
+  overflow-x: hidden; /*가로 스크롤 방지*/
+}
+
+body {
+  overflow-x: hidden;
+  color: rgb(29, 29, 31); /* 애플 사이트 폰트 색상 */
+  letter-spacing: -0.05em; /* 자간 간격 줄임 */
+  background: white;
+}
+
+p {
+  line-height: 1.6; /* 문단의 라인 간격 떨어뜨리기 */
+}
+
+a {
+  color: rgb(29, 29, 31);
+  text-decoration: none;
+}
+
+.global-nav {
+  /* 네브바1의 높이 설정 */
+  height: 44px;
+  padding: 0 1rem;
+  /* 영역 없애줌 -> 스크롤 높이 차지 안하게 */
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.local-nav {
+  height: 52px;
+  border-bottom: 1px solid #ddd;
+  padding: 0 1rem;
+  /* 영역 없애줌 -> 스크롤 높이 차지 안하게 */
+  position: absolute;
+  width: 100%;
+  top: 45px; /* 글로벌 네브 밑에 위치 */
+  left: 0;
+  z-index: 10;
+}
+
+.global-nav-links,
+.local-nav-links {
+  /* 네브바 높이만큼 설정 */
+  height: 100%;
+  /* 요소 가로배치 &  & 세로 정렬 */
+  display: flex;
+
+  align-items: center;
+  /* 최대 width 지정 */
+  max-width: 1000px;
+  /* 가운데 정렬 */
+  margin: 0 auto;
+}
+
+.global-nav-links {
+  /* 간격 맞춰 정렬 */
+  justify-content: space-between;
+}
+
+.product-name {
+  /* auto는 남은 여백을 다 사용하겠다는 소리. 나 빼고 다 오른쪽으로 밀어버려라 */
+  margin-right: auto;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* not 제외 */
+.local-nav-links a:not(.product-name) {
+  margin-left: 2em;
+  font-size: 0.8rem;
+}
+
+.scroll-section {
+  /* 뷰포트 단위, 브라우저 높이의 절반만큼 패딩 탑을 준다.  */
+  padding-top: 50vh;
+  position: relative;
+}
+
+/*
+static은 absolute보다 아래 깔려서 AirMug Pro 글자 안나옴, z-index 동작을 하게 해야함
+AirMug Pro 글자 포지션 relative로 변경
+스크롤 섹션 자체 패딩(vh)이 절반만큼 있어서, 글자가 아래로 살짝 밀림 
+→h1의 top 위치 올려줌 */
+#scroll-section-0 h1 {
+  font-size: 4rem;
+  position: relative;
+  z-index: 5;
+  top: -10vh;
+}
+#scroll-section-0 {
+  text-align: center;
+  color: rgb(29, 29, 31);
+}
+
+.main-message {
+  /* 요소 세로, 가운데 정렬, 요소간 마진, 요소 내부 패딩 */
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  margin: 0.1em 0;
+  padding: 1em 0;
+  opacity: 0;
+  top: 35vh;
+}
+.main-message p {
+  /* 자간 간격 축소, 정렬, 굵게 */
+  line-height: 1.3em;
+  font-weight: bold;
+  text-align: center;
+}
+
+/*메인 요소 위치 요소 고정, */
+.sticky-elem {
+  position: fixed;
+  left: 0;
+
+  width: 100%;
+  display: none; /*안보이게 함 (단순 안보이는 것이 아닌 요소 영역 자체를 없앰 )*/
+  /*단순 안보이게 하는 것은 visiability : hidden */
+}
+.sticky-elem-canvas {
+  top: 0;
+  height: 100%;
+}
+
+.sticky-elem-canvas canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+#scroll-section-1,
+#scroll-section-3 {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+#scroll-section-1 p {
+  /* 네브바와 패딩을 맞춰준다. 0(상하) 1(좌우) */
+  padding: 0 1rem;
+
+  > strong {
+    font-size: 3rem;
+    /* 큰 글자를 띄워서 오른쪽에 붙이고 간격을 0.2em 만큼 둔다 */
+    /* 나머지 텍스트는 큰 글자를 위에서부터 감싸는 형식으로 보인다 */
+    float: left;
+    margin-right: 0.2em;
+    color: rgb(29, 29, 31);
+  }
+  font-size: 1.5rem;
+  color: #888;
+}
+
+#scroll-section-2 {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+#scroll-section-2 .b {
+  top: 10%;
+  left: 40%;
+}
+
+#scroll-section-2 .c {
+  top: 15%;
+  left: 45%;
+}
+.title small {
+  font-size: 1.2rem;
+}
+.desc-message {
+  width: 50%;
+  padding: 0 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  opacity: 0;
+}
+.pin {
+  /* 상자 하나를 만들어 선 표현 */
+  width: 1px;
+  height: 100px;
+  background: rgb(29, 29, 31);
+}
+.mid-message {
+  > strong {
+    color: rgb(29, 29, 31);
+  }
+  padding: 0 1rem;
+  font-size: 2rem;
+  color: #888;
+}
+.canvas-caption {
+  margin: auto;
+  text-align: center;
+  padding: 0 1rem;
+  font-size: 1.2rem;
+  color: #888;
+}
+#scroll-section-3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.image-blend-canvas {
+}
+
+.footer {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: darkorange;
+  color: white;
+  margin-top: 1em;
+}
+
+#scene-0 #scroll-section-0 .sticky-elem,
+#scene-1 #scroll-section-1 .sticky-elem,
+#scene-2 #scroll-section-2 .sticky-elem,
+#scene-3 #scroll-section-3 .sticky-elem {
+  display: block;
+}
+/* 데스크탑용 */
+@media (min-width: 1024px) {
+  #scroll-section-0 {
+    > h1 {
+      font-size: 9vw;
+    }
+    > div {
+      font-size: 4vw;
+    }
+  }
+
+  #scroll-section-1 p {
+    > strong {
+      font-size: 4rem;
+    }
+    font-size: 2rem;
+  }
+
+  #scroll-section-2 {
+    > .title {
+      font-size: 4vw;
+      > p > small {
+        font-size: 2vw;
+      }
+    }
+    > .desc-message {
+      font-size: 1vw;
+    }
+  }
+  #scroll-section-2 .b {
+    top: 20%;
+    left: 53%;
+  }
+
+  #scroll-section-2 .c {
+    left: 55%;
+  }
+
+  #scroll-section-3 {
+    > .mid-message {
+      font-size: 4vw;
+    }
+    > .canvas-caption {
+      font-size: 2rem;
+    }
+  }
+}
