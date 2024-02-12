@@ -181,8 +181,8 @@
     sceneInfo[2].objs.canvas.style.transform = `translate3d(-50%,-50%,0) scale(${heightRatio})`;
   }
 
-  // step 9 현재 스크롤 위치에 따라 각 메세지의 opacity 값을 조정하기 위한 계산함수
-  //매개변수로 opacity 시작값과 끝 값, 첫번째 신 내에서 현재 스크롤된 정도(비율) 필요
+  // step 9 현재 스크롤 위치에 따라 각 메세지의 값을 조정하기 위한 계산함수
+  //매개변수로 시작값과 끝 값, 첫번째 신 내에서 현재 스크롤된 정도(비율) 필요
   function calcValues(values, currentYOffset) {
     let rv;
     const scrollHeight = sceneInfo[currentScene].scrollHeight;
@@ -658,13 +658,27 @@
     for (let i = 0; i < currentScene; i++) {
       prevScrollHeight += sceneInfo[i].scrollHeight;
     }
+
+    //스크롤 이벤트가 필요한 범위
+    if (
+      delayedYOffset <
+      prevScrollHeight + sceneInfo[currentScene].scrollHeight
+    ) {
+      document.body.classList.remove("scroll-effect-end");
+    }
     // 스크롤 내릴 때
     if (
       delayedYOffset >
       prevScrollHeight + sceneInfo[currentScene].scrollHeight
     ) {
       enterNewScene = true;
-      currentScene++;
+      if (currentScene == sceneInfo.length - 1) {
+        document.body.classList.add("scroll-effect-end");
+      }
+      if (currentScene < sceneInfo.length - 1) {
+        currentScene++;
+      }
+
       //바디 태그에 아이디 줘서 현재 스크롤 요소 띄우기
       document.body.setAttribute("id", `scene-${currentScene}`);
       if (enterNewScene) return;
@@ -750,43 +764,69 @@
     }
   }
 
-  //step3
-  // 모바일 사이즈 보다 커질 때 , //윈도우 사이즈 변할 때 코드 실행
-  window.addEventListener("resize", () => {
-    if (innerWidth > 900) {
-      setLayout();
-    }
-    sceneInfo[3].values.rectStartY = 0;
-  });
-
   // 모바일 기기를 가로/세로 모드 전환할 때 layout 재지정
-  window.addEventListener("orientationchange", setLayout);
+  window.addEventListener("orientationchange", () => {
+    scrollTo(0, 0);
+    setTimeout(() => {
+      window.location.reload();
+    }, 500); //0.5s
+  });
 
   //비디오 같은 이미지들이 먼저 로드된 후 스크립트 실행 -> 보이는 게 없는데, 기능만 실행돼봤자 의미 X
   window.addEventListener("load", () => {
+    document.body.classList.remove("before-load");
+
     setLayout();
     //로드 했을 때, 첫번째 이미지 그려주면됨
 
     sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0);
 
+    // 조금씩 단계적으로 빠르게 움직여서 부드럽게 스크롤 발생시키기
+    let tempYoffset = yOffset;
+    let tempScrollCount = 0;
+    if (yOffset > 0) {
+      let siid = setInterval(() => {
+        //x,y px만큼 x,y위치로 스크롤 , 시간차로 지연을 줘서 실행
+        window.scrollTo(0, tempYoffset);
+        tempYoffset += 1;
+        tempScrollCount++;
+        if (tempScrollCount >= 20) {
+          clearInterval(siid);
+        }
+      }, 20); //0.02초
+    }
     //로드 했을 때, scene 2의  1번째 이미지 그려주면됨
 
     sceneInfo[2].objs.context.drawImage(sceneInfo[2].objs.videoImages[0], 0, 0);
+
+    // 로드 된 후 스크롤 이벤트 동작
+    window.addEventListener("scroll", () => {
+      yOffset = window.scrollY;
+
+      scrollLoop();
+      checkMenu(yOffset);
+
+      if (!rafState) {
+        //부정의 부정 -> 참 , 즉, 스크롤이 다시 발생하면
+        rafId = requestAnimationFrame(loop); //이어서 loop 실행
+        rafState = true;
+      }
+    });
+
+    //step3
+    // 모바일 사이즈 보다 커질 때 , //윈도우 사이즈 변할 때 코드 실행
+    window.addEventListener("resize", () => {
+      if (innerWidth > 900) {
+        window.location.reload();
+      }
+    });
+
+    document.querySelector(".loading").addEventListener("transtionend", () => {
+      document.body.removeChild();
+    });
   });
+
   //step 4 :스크롤 이벤트 등록
-
-  window.addEventListener("scroll", () => {
-    yOffset = window.scrollY;
-
-    scrollLoop();
-    checkMenu(yOffset);
-
-    if (!rafState) {
-      //부정의 부정 -> 참 , 즉, 스크롤이 다시 발생하면
-      rafId = requestAnimationFrame(loop); //이어서 loop 실행
-      rafState = true;
-    }
-  });
 
   setCanvasImage();
 })();

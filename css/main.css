@@ -48,10 +48,15 @@ a {
 .local-nav-sticky .local-nav {
   position: fixed;
   top: 0;
+
   /* 투명하고 하얗게 칠함 */
   background-color: rgba(255, 255, 255, 0.1);
   /* 뿌옇게 처리 */
+  /* ios에서는 webkit 필요 */
   backdrop-filter: saturate(180%) blur(15px);
+  -webkit-backdrop-filter: saturate(180%) blur(15px);
+  -moz-backdrop-filter: saturate(180%) blur(15px);
+  -o-backdrop-filter: saturate(180%) blur(15px);
 }
 
 .global-nav-links,
@@ -206,7 +211,7 @@ AirMug Pro 글자 포지션 relative로 변경
   color: #888;
 }
 .canvas-caption {
-  margin: -8em auto 0;
+  margin: -24rem auto 0;
   text-align: center;
   padding: 0 1rem;
   font-size: 1.2rem;
@@ -236,6 +241,83 @@ AirMug Pro 글자 포지션 relative로 변경
 #scene-2 #scroll-section-2 .sticky-elem,
 #scene-3 #scroll-section-3 .sticky-elem {
   display: block;
+  will-change: transform, opacity;
+}
+
+/* 로딩 후 보이게  */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 로딩바 가운데 정렬을 위한 flex */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  background: white;
+  opacity: 0;
+  transition: 0.5s;
+}
+
+.loading-circle {
+  width: 54px;
+  height: 54px;
+  /* 원자체를 살짝 돌리기 */
+  animation: loading-spin 3s infinite;
+}
+
+@keyframes loading-spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* 로딩바 돌아가기  */
+@keyframes loading-circle-ani {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  75% {
+    /* 속도 조절  */
+    stroke-dashoffset: -147;
+  }
+  100% {
+    stroke-dashoffset: -157;
+  }
+}
+
+/* 로딩 중일 땐 스크롤 잠구기 */
+.before-load {
+  overflow: hidden;
+}
+/* 로딩 전 body에 붙어 보이게하기 */
+.before-load .loading {
+  opacity: 1;
+}
+.before-load .container {
+  display: none;
+}
+
+/* iphone에서 가로 스크롤 방지 */
+.container {
+  overflow-x: hidden;
+}
+.loading-circle circle {
+  /* svg에서 테두리 주기 , 내부 투명하게  */
+  stroke: black;
+  stroke-width: 4;
+  stroke-dasharray: 157;
+  fill: transparent;
+  animation: loading-circle-ani 1s infinite;
+}
+
+.scroll-effect-end .sticky-elem {
+  /* important = css최상위로 올리기 */
+  display: none !important;
+}
+.normal-content {
+  margin-bottom: 10rem;
 }
 /* 데스크탑용 */
 @media (min-width: 1024px) {
@@ -288,6 +370,7 @@ AirMug Pro 글자 포지션 relative로 변경
     }
     > .canvas-caption {
       font-size: 2rem;
+      margin-top: -8rem;
     }
   }
 }
